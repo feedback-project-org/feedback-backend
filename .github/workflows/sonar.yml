@@ -14,26 +14,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Code checkout
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Java setup (Spring Boot ku correct)
+      # 2️⃣ Setup Java 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: '17'
-          distribution: 'temurin'
 
-      # 3️⃣ Maven wrapper permission (VERY IMPORTANT)
+      # 3️⃣ Cache Maven dependencies (speeds up builds)
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven
+
+      # 4️⃣ Give permission to Maven wrapper
       - name: Give execute permission to mvnw
         run: chmod +x mvnw
 
-      # 4️⃣ Maven build ONLY (Sonar skip pannrom)
-      - name: Build backend (skip sonar)
+      # 5️⃣ Build project and run tests
+      - name: Build project
         run: ./mvnw -B clean verify -Dsonar.skip=true
 
-      # 5️⃣ SonarCloud Analysis (ONLY here)
+      # 6️⃣ SonarCloud analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
@@ -42,4 +51,5 @@ jobs:
           args: >
             -Dsonar.projectKey=prawin0614_feedback-backend
             -Dsonar.organization=prawin0614
-            -Dsonar.java.binaries=target
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml

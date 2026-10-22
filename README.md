@@ -6,6 +6,7 @@
 The Smart Complaint Management System is a full-stack web application developed using Java, Spring Boot, React, and H2 Database. It is designed to provide a digital platform for recording and managing complaints instead of relying entirely on manual records.
 
 The application demonstrates full-stack development, backend API development, database integration, and cloud deployment using Microsoft Azure.
+liveapp:https://feedback-frontend-app-gmdwa5a5f9b5fme8.centralindia-01.azurewebsites.net/
 
 ## Technologies Used
 
